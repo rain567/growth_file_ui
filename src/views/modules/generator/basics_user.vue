@@ -34,7 +34,7 @@
           callback()
         }
       }
-      var validateComfirmPassword = (rule, value, callback) => {
+      var validateComfirmPassworcd = (rule, value, callback) => {
         if (!this.dataForm.id && !/\S/.test(value)) {
           callback(new Error('确认密码不能为空'))
         } else if (this.dataForm.password !== value) {
