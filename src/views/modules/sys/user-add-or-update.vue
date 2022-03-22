@@ -4,8 +4,17 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
+      <el-form-item label="学号" prop="no">
+        <el-input v-model="dataForm.no" placeholder="输入学号"></el-input>
+      </el-form-item>
+      <el-form-item label="所在学院" prop="faculty">
+        <el-input v-model="dataForm.faculty" placeholder="所在学院"></el-input>
+      </el-form-item>
       <el-form-item label="用户名" prop="userName">
         <el-input v-model="dataForm.userName" placeholder="登录帐号"></el-input>
+      </el-form-item>
+      <el-form-item label="姓名" prop="name">
+        <el-input v-model="dataForm.name" placeholder="姓名"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password" :class="{ 'is-required': !dataForm.id }">
         <el-input v-model="dataForm.password" type="password" placeholder="密码"></el-input>
@@ -23,6 +32,11 @@
         <el-checkbox-group v-model="dataForm.roleIdList">
           <el-checkbox v-for="role in roleList" :key="role.roleId" :label="role.roleId">{{ role.roleName }}</el-checkbox>
         </el-checkbox-group>
+      </el-form-item>
+      <el-form-item label="班级" size="mini" prop="userClass">
+        <el-select v-model="dataForm.userClass">
+          <el-option v-for="classOne in classList" :key="classOne.name" :label="classOne.name">{{ classOne.name }}</el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="状态" size="mini" prop="status">
         <el-radio-group v-model="dataForm.status">
@@ -75,8 +89,11 @@
       return {
         visible: false,
         roleList: [],
+        classList: [],
         dataForm: {
           id: 0,
+          no: 0,
+          faculty: '',
           userName: '',
           password: '',
           comfirmPassword: '',
@@ -84,7 +101,9 @@
           email: '',
           mobile: '',
           roleIdList: [],
-          status: 1
+          status: 1,
+          name: '',
+          userClass: ''
         },
         dataRule: {
           userName: [
@@ -111,33 +130,45 @@
       init (id) {
         this.dataForm.id = id || 0
         this.$http({
-          url: this.$http.adornUrl('/sys/role/select'),
+          url: this.$http.adornUrl('/generator/gfclass/allList'),
           method: 'get',
-          params: this.$http.adornParams()
+          params: this.$http.adornParams({})
         }).then(({data}) => {
-          this.roleList = data && data.code === 0 ? data.list : []
+          this.classList = data && data.code === 0 ? data.list : []
         }).then(() => {
-          this.visible = true
-          this.$nextTick(() => {
-            this.$refs['dataForm'].resetFields()
-          })
-        }).then(() => {
-          if (this.dataForm.id) {
-            this.$http({
-              url: this.$http.adornUrl(`/sys/user/info/${this.dataForm.id}`),
-              method: 'get',
-              params: this.$http.adornParams()
-            }).then(({data}) => {
-              if (data && data.code === 0) {
-                this.dataForm.userName = data.user.username
-                this.dataForm.salt = data.user.salt
-                this.dataForm.email = data.user.email
-                this.dataForm.mobile = data.user.mobile
-                this.dataForm.roleIdList = data.user.roleIdList
-                this.dataForm.status = data.user.status
-              }
+          this.$http({
+            url: this.$http.adornUrl('/sys/role/select'),
+            method: 'get',
+            params: this.$http.adornParams()
+          }).then(({data}) => {
+            this.roleList = data && data.code === 0 ? data.list : []
+          }).then(() => {
+            this.visible = true
+            this.$nextTick(() => {
+              this.$refs['dataForm'].resetFields()
             })
-          }
+          }).then(() => {
+            if (this.dataForm.id) {
+              this.$http({
+                url: this.$http.adornUrl(`/sys/user/info/${this.dataForm.id}`),
+                method: 'get',
+                params: this.$http.adornParams()
+              }).then(({data}) => {
+                if (data && data.code === 0) {
+                  this.dataForm.userName = data.user.username
+                  this.dataForm.salt = data.user.salt
+                  this.dataForm.email = data.user.email
+                  this.dataForm.mobile = data.user.mobile
+                  this.dataForm.roleIdList = data.user.roleIdList
+                  this.dataForm.status = data.user.status
+                  this.dataForm.no = data.user.no
+                  this.dataForm.faculty = data.user.faculty
+                  this.dataForm.name = data.user.name
+                  this.dataForm.userClass = data.user.userClass
+                }
+              })
+            }
+          })
         })
       },
       // 表单提交
@@ -155,7 +186,11 @@
                 'email': this.dataForm.email,
                 'mobile': this.dataForm.mobile,
                 'status': this.dataForm.status,
-                'roleIdList': this.dataForm.roleIdList
+                'roleIdList': this.dataForm.roleIdList,
+                'no': this.dataForm.no,
+                'faculty': this.dataForm.faculty,
+                'name': this.dataForm.name,
+                'userClass': this.dataForm.userClass
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

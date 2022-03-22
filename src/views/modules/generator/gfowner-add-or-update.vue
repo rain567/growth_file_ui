@@ -50,7 +50,9 @@
       <el-input v-model="dataForm.major" placeholder="所属专业"></el-input>
     </el-form-item>
     <el-form-item label="所属班级" prop="userClass">
-      <el-input v-model="dataForm.userClass" placeholder="所属班级"></el-input>
+      <el-select v-model="dataForm.userClass">
+        <el-option v-for="classOne in classList" :key="classOne.name" :label="classOne.name" :value="classOne.name">{{ classOne.name }}</el-option>
+      </el-select>
     </el-form-item>
     <el-form-item label="民族" prop="mz">
       <el-select v-model="dataForm.mz">
@@ -80,6 +82,7 @@
     data () {
       return {
         visible: false,
+        classList: [],
         dataForm: {
           id: 0,
           name: '',
@@ -171,38 +174,46 @@
       init (id) {
         this.dataForm.id = id || 0
         this.visible = true
-        this.$nextTick(() => {
-          this.$refs['dataForm'].resetFields()
-          if (this.dataForm.id) {
-            this.$http({
-              url: this.$http.adornUrl(`/generator/gfowner/info/${this.dataForm.id}`),
-              method: 'get',
-              params: this.$http.adornParams()
-            }).then(({data}) => {
-              if (data && data.code === 0) {
-                this.dataForm.name = data.gfOwner.name
-                this.dataForm.ownerNo = data.gfOwner.ownerNo
-                this.dataForm.ownerName = data.gfOwner.ownerName
-                this.dataForm.homePhone = data.gfOwner.homePhone
-                this.dataForm.bysj = data.gfOwner.bysj
-                this.dataForm.rxsj = data.gfOwner.rxsj
-                this.dataForm.jtzz = data.gfOwner.jtzz
-                this.dataForm.status = data.gfOwner.status
-                this.dataForm.birthday = data.gfOwner.birthday
-                this.dataForm.zzmm = data.gfOwner.zzmm
-                this.dataForm.major = data.gfOwner.major
-                this.dataForm.userClass = data.gfOwner.userClass
-                this.dataForm.mz = data.gfOwner.mz
-                this.dataForm.jg = data.gfOwner.jg
-                this.dataForm.shareUser = data.gfOwner.shareUser
-                this.dataForm.isShare = data.gfOwner.isShare
-                this.dataForm.createTime = data.gfOwner.createTime
-                this.dataForm.updateTime = data.gfOwner.updateTime
-                this.dataForm.operator = data.gfOwner.operator
-                this.dataForm.remark = data.gfOwner.remark
-              }
-            })
-          }
+        this.$http({
+          url: this.$http.adornUrl('/generator/gfclass/allList'),
+          method: 'get',
+          params: this.$http.adornParams({})
+        }).then(({data}) => {
+          this.classList = data && data.code === 0 ? data.list : []
+        }).then(() => {
+          this.$nextTick(() => {
+            this.$refs['dataForm'].resetFields()
+            if (this.dataForm.id) {
+              this.$http({
+                url: this.$http.adornUrl(`/generator/gfowner/info/${this.dataForm.id}`),
+                method: 'get',
+                params: this.$http.adornParams()
+              }).then(({data}) => {
+                if (data && data.code === 0) {
+                  this.dataForm.name = data.gfOwner.name
+                  this.dataForm.ownerNo = data.gfOwner.ownerNo
+                  this.dataForm.ownerName = data.gfOwner.ownerName
+                  this.dataForm.homePhone = data.gfOwner.homePhone
+                  this.dataForm.bysj = data.gfOwner.bysj
+                  this.dataForm.rxsj = data.gfOwner.rxsj
+                  this.dataForm.jtzz = data.gfOwner.jtzz
+                  this.dataForm.status = data.gfOwner.status
+                  this.dataForm.birthday = data.gfOwner.birthday
+                  this.dataForm.zzmm = data.gfOwner.zzmm
+                  this.dataForm.major = data.gfOwner.major
+                  this.dataForm.userClass = data.gfOwner.userClass
+                  this.dataForm.mz = data.gfOwner.mz
+                  this.dataForm.jg = data.gfOwner.jg
+                  this.dataForm.shareUser = data.gfOwner.shareUser
+                  this.dataForm.isShare = data.gfOwner.isShare
+                  this.dataForm.createTime = data.gfOwner.createTime
+                  this.dataForm.updateTime = data.gfOwner.updateTime
+                  this.dataForm.operator = data.gfOwner.operator
+                  this.dataForm.remark = data.gfOwner.remark
+                }
+              })
+            }
+          })
         })
       },
       // 表单提交

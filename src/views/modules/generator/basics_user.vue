@@ -7,6 +7,9 @@
       <el-form-item label="用户名" prop="userName">
         <el-input v-model="dataForm.userName" placeholder="登录帐号"></el-input>
       </el-form-item>
+      <el-form-item label="姓名" prop="name">
+        <el-input v-model="dataForm.name" placeholder="姓名"></el-input>
+      </el-form-item>
       <el-form-item label="所在学院" prop="faculty">
         <el-input v-model="dataForm.faculty" placeholder="所在学院"></el-input>
       </el-form-item>
@@ -71,7 +74,8 @@
           email: '',
           mobile: '',
           roleIdList: [],
-          status: 1
+          status: 1,
+          name: ''
         },
         dataRule: {
           userName: [
@@ -127,6 +131,7 @@
                 this.dataForm.mobile = data.user.mobile
                 this.dataForm.roleIdList = data.user.roleIdList
                 this.dataForm.status = data.user.status
+                this.dataForm.name = data.user.name
               }
             })
           }
@@ -149,7 +154,8 @@
                 'email': this.dataForm.email,
                 'mobile': this.dataForm.mobile,
                 'status': this.dataForm.status,
-                'roleIdList': this.dataForm.roleIdList
+                'roleIdList': this.dataForm.roleIdList,
+                'name': this.dataForm.name
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
