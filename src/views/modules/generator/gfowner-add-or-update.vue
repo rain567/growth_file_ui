@@ -17,16 +17,31 @@
       <el-input v-model="dataForm.homePhone" placeholder="家庭联系方式"></el-input>
     </el-form-item>
     <el-form-item label="毕业时间" prop="bysj">
-      <el-input v-model="dataForm.bysj" placeholder="毕业时间"></el-input>
+      <el-date-picker
+        v-model="dataForm.bysj"
+        type="date"
+        value-format="yyyy-MM-dd HH:mm:ss"
+        placeholder="选择日期">
+      </el-date-picker>
     </el-form-item>
     <el-form-item label="入学时间" prop="rxsj">
-      <el-input v-model="dataForm.rxsj" placeholder="入学时间"></el-input>
+      <el-date-picker
+        v-model="dataForm.rxsj"
+        type="date"
+        value-format="yyyy-MM-dd HH:mm:ss"
+        placeholder="选择日期">
+      </el-date-picker>
     </el-form-item>
     <el-form-item label="家庭住址" prop="jtzz">
       <el-input v-model="dataForm.jtzz" placeholder="家庭住址"></el-input>
     </el-form-item>
     <el-form-item label="出生日期" prop="birthday">
-      <el-input v-model="dataForm.birthday" placeholder="出生日期"></el-input>
+      <el-date-picker
+        v-model="dataForm.birthday"
+        type="date"
+        value-format="yyyy-MM-dd HH:mm:ss"
+        placeholder="选择日期">
+      </el-date-picker>
     </el-form-item>
     <el-form-item label="政治面貌" prop="zzmm">
       <el-input v-model="dataForm.zzmm" placeholder="政治面貌"></el-input>
@@ -38,7 +53,10 @@
       <el-input v-model="dataForm.userClass" placeholder="所属班级"></el-input>
     </el-form-item>
     <el-form-item label="民族" prop="mz">
-      <el-input v-model="dataForm.mz" placeholder="民族"></el-input>
+      <el-select v-model="dataForm.mz">
+        <el-option value="汉族">汉族</el-option>
+        <el-option value="状族">壮族</el-option>
+      </el-select>
     </el-form-item>
     <el-form-item label="籍贯" prop="jg">
       <el-input v-model="dataForm.jg" placeholder="籍贯"></el-input>
@@ -48,18 +66,6 @@
     </el-form-item>
     <el-form-item label="是否共享档案" prop="isShare">
       <el-input v-model="dataForm.isShare" placeholder="是否共享档案"></el-input>
-    </el-form-item>
-    <el-form-item label="创建时间" prop="createTime">
-      <el-input v-model="dataForm.createTime" placeholder="创建时间"></el-input>
-    </el-form-item>
-    <el-form-item label="更新时间" prop="updateTime">
-      <el-input v-model="dataForm.updateTime" placeholder="更新时间"></el-input>
-    </el-form-item>
-    <el-form-item label="操作人" prop="operator">
-      <el-input v-model="dataForm.operator" placeholder="操作人"></el-input>
-    </el-form-item>
-    <el-form-item label="备注" prop="remark">
-      <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -83,6 +89,7 @@
           bysj: '',
           rxsj: '',
           jtzz: '',
+          status: '',
           birthday: '',
           zzmm: '',
           major: '',
@@ -117,6 +124,9 @@
           ],
           jtzz: [
             { required: true, message: '家庭住址不能为空', trigger: 'blur' }
+          ],
+          status: [
+            { required: true, message: '状态(1新建、2审核)不能为空', trigger: 'blur' }
           ],
           birthday: [
             { required: true, message: '出生日期不能为空', trigger: 'blur' }
@@ -177,6 +187,7 @@
                 this.dataForm.bysj = data.gfOwner.bysj
                 this.dataForm.rxsj = data.gfOwner.rxsj
                 this.dataForm.jtzz = data.gfOwner.jtzz
+                this.dataForm.status = data.gfOwner.status
                 this.dataForm.birthday = data.gfOwner.birthday
                 this.dataForm.zzmm = data.gfOwner.zzmm
                 this.dataForm.major = data.gfOwner.major
@@ -210,6 +221,7 @@
                 'bysj': this.dataForm.bysj,
                 'rxsj': this.dataForm.rxsj,
                 'jtzz': this.dataForm.jtzz,
+                'status': this.dataForm.status,
                 'birthday': this.dataForm.birthday,
                 'zzmm': this.dataForm.zzmm,
                 'major': this.dataForm.major,

@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('generator:gfowner:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('generator:gfowner:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('generator:gfphysicaltest:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('generator:gfphysicaltest:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -23,116 +23,136 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="id"
         header-align="center"
         align="center"
-        label="档案名称">
+        label="id">
       </el-table-column>
       <el-table-column
-        prop="ownerNo"
+        prop="userName"
         header-align="center"
         align="center"
-        label="档案主人学号">
+        label="体测姓名">
       </el-table-column>
       <el-table-column
-        prop="ownerName"
+        prop="userNo"
         header-align="center"
         align="center"
-        label="档案主人姓名">
+        label="学号">
       </el-table-column>
       <el-table-column
-        prop="homePhone"
+        prop="userId"
         header-align="center"
         align="center"
-        label="家庭联系方式">
+        label="体测学生">
       </el-table-column>
       <el-table-column
-        prop="bysj"
+        prop="longRun"
         header-align="center"
         align="center"
-        label="毕业时间">
+        label="长跑">
       </el-table-column>
       <el-table-column
-        prop="rxsj"
+        prop="chinUp"
         header-align="center"
         align="center"
-        label="入学时间">
+        label="引体向上">
       </el-table-column>
       <el-table-column
-        prop="jtzz"
+        prop="standingLongJump"
         header-align="center"
         align="center"
-        label="家庭住址">
+        label="立定跳远">
       </el-table-column>
       <el-table-column
-        prop="status"
+        prop="seatBodyAnteflexion"
         header-align="center"
         align="center"
-        label="状态">
-        <template slot-scope="scope">
-          <el-tag type="success" v-show="scope.row.status == 1">新增</el-tag>
-          <el-tag type="success" v-show="scope.row.status == 2">审核</el-tag>
-        </template>
+        label="左立体前屈">
       </el-table-column>
       <el-table-column
-        prop="birthday"
+        prop="sprint"
         header-align="center"
         align="center"
-        label="出生日期">
+        label="短跑">
       </el-table-column>
       <el-table-column
-        prop="zzmm"
+        prop="pulmonary"
         header-align="center"
         align="center"
-        label="政治面貌">
+        label="肺活量">
       </el-table-column>
       <el-table-column
-        prop="major"
+        prop="weight"
         header-align="center"
         align="center"
-        label="所属专业">
+        label="体重">
       </el-table-column>
       <el-table-column
-        prop="userClass"
+        prop="longRunScore"
         header-align="center"
         align="center"
-        label="所属班级">
+        label="长跑得分">
       </el-table-column>
       <el-table-column
-        prop="mz"
+        prop="chinUpScore"
         header-align="center"
         align="center"
-        label="民族">
+        label="引体向上得分">
       </el-table-column>
       <el-table-column
-        prop="jg"
+        prop="standingLongJumpScore"
         header-align="center"
         align="center"
-        label="籍贯">
+        label="立定跳远得分">
       </el-table-column>
       <el-table-column
-        prop="shareUser"
+        prop="seatBodyAnteflexionScore"
         header-align="center"
         align="center"
-        label="档案共享用户">
+        label="左立体前屈得分">
       </el-table-column>
       <el-table-column
-        prop="isShare"
+        prop="sprintScore"
         header-align="center"
         align="center"
-        label="是否共享档案">
+        label="短跑得分">
       </el-table-column>
       <el-table-column
-        prop="createTime"
+        prop="pulmonaryScore"
         header-align="center"
         align="center"
-        label="创建时间">
+        label="肺活量得分">
       </el-table-column>
       <el-table-column
-        prop="updateTime"
+        prop="statureWeightScore"
         header-align="center"
         align="center"
-        label="更新时间">
+        label="身高体重得分">
+      </el-table-column>
+      <el-table-column
+        prop="stature"
+        header-align="center"
+        align="center"
+        label="身高">
+      </el-table-column>
+      <el-table-column
+        prop="sex"
+        header-align="center"
+        align="center"
+        label="性别">
+      </el-table-column>
+      <el-table-column
+        prop="faculty"
+        header-align="center"
+        align="center"
+        label="所在学院">
+      </el-table-column>
+      <el-table-column
+        prop="operator"
+        header-align="center"
+        align="center"
+        label="操作人">
       </el-table-column>
       <el-table-column
         prop="remark"
@@ -167,7 +187,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './gfowner-add-or-update'
+  import AddOrUpdate from './gfphysicaltest-add-or-update'
   export default {
     data () {
       return {
@@ -194,7 +214,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/generator/gfowner/list'),
+          url: this.$http.adornUrl('/generator/gfphysicaltest/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -245,7 +265,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/generator/gfowner/delete'),
+            url: this.$http.adornUrl('/generator/gfphysicaltest/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

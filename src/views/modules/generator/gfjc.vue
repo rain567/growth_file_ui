@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('generator:gfowner:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('generator:gfowner:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('generator:gfjc:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('generator:gfjc:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -23,104 +23,64 @@
         width="50">
       </el-table-column>
       <el-table-column
+        prop="id"
+        header-align="center"
+        align="center"
+        label="id">
+      </el-table-column>
+      <el-table-column
+        prop="studentNo"
+        header-align="center"
+        align="center"
+        label="学生学号">
+      </el-table-column>
+      <el-table-column
         prop="name"
         header-align="center"
         align="center"
-        label="档案名称">
-      </el-table-column>
-      <el-table-column
-        prop="ownerNo"
-        header-align="center"
-        align="center"
-        label="档案主人学号">
-      </el-table-column>
-      <el-table-column
-        prop="ownerName"
-        header-align="center"
-        align="center"
-        label="档案主人姓名">
-      </el-table-column>
-      <el-table-column
-        prop="homePhone"
-        header-align="center"
-        align="center"
-        label="家庭联系方式">
-      </el-table-column>
-      <el-table-column
-        prop="bysj"
-        header-align="center"
-        align="center"
-        label="毕业时间">
-      </el-table-column>
-      <el-table-column
-        prop="rxsj"
-        header-align="center"
-        align="center"
-        label="入学时间">
-      </el-table-column>
-      <el-table-column
-        prop="jtzz"
-        header-align="center"
-        align="center"
-        label="家庭住址">
+        label="学生姓名">
       </el-table-column>
       <el-table-column
         prop="status"
         header-align="center"
         align="center"
-        label="状态">
-        <template slot-scope="scope">
-          <el-tag type="success" v-show="scope.row.status == 1">新增</el-tag>
-          <el-tag type="success" v-show="scope.row.status == 2">审核</el-tag>
-        </template>
+        label="状态(1新建、2审核)">
       </el-table-column>
       <el-table-column
-        prop="birthday"
+        prop="type"
         header-align="center"
         align="center"
-        label="出生日期">
+        label="类型(1奖励、2惩罚)">
       </el-table-column>
       <el-table-column
-        prop="zzmm"
+        prop="createName"
         header-align="center"
         align="center"
-        label="政治面貌">
+        label="录入人姓名">
       </el-table-column>
       <el-table-column
-        prop="major"
+        prop="auditName"
         header-align="center"
         align="center"
-        label="所属专业">
+        label="审批人姓名">
       </el-table-column>
       <el-table-column
-        prop="userClass"
+        prop="getTime"
         header-align="center"
         align="center"
-        label="所属班级">
+        label="获奖/惩日期">
       </el-table-column>
       <el-table-column
-        prop="mz"
+        prop="content"
         header-align="center"
         align="center"
-        label="民族">
+        label="获奖/惩内容">
       </el-table-column>
       <el-table-column
-        prop="jg"
+        prop="cl"
         header-align="center"
         align="center"
-        label="籍贯">
-      </el-table-column>
-      <el-table-column
-        prop="shareUser"
-        header-align="center"
-        align="center"
-        label="档案共享用户">
-      </el-table-column>
-      <el-table-column
-        prop="isShare"
-        header-align="center"
-        align="center"
-        label="是否共享档案">
+        label="材料相关证明">
       </el-table-column>
       <el-table-column
         prop="createTime"
@@ -133,6 +93,12 @@
         header-align="center"
         align="center"
         label="更新时间">
+      </el-table-column>
+      <el-table-column
+        prop="operator"
+        header-align="center"
+        align="center"
+        label="操作人">
       </el-table-column>
       <el-table-column
         prop="remark"
@@ -167,7 +133,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './gfowner-add-or-update'
+  import AddOrUpdate from './gfjc-add-or-update'
   export default {
     data () {
       return {
@@ -194,7 +160,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/generator/gfowner/list'),
+          url: this.$http.adornUrl('/generator/gfjc/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -245,7 +211,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/generator/gfowner/delete'),
+            url: this.$http.adornUrl('/generator/gfjc/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {
