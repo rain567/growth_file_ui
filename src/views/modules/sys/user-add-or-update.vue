@@ -4,11 +4,8 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="学号" prop="no">
-        <el-input v-model="dataForm.no" placeholder="输入学号"></el-input>
-      </el-form-item>
-      <el-form-item label="所在学院" prop="faculty">
-        <el-input v-model="dataForm.faculty" placeholder="所在学院"></el-input>
+      <el-form-item label="学号/工号" prop="no">
+        <el-input v-model="dataForm.no" placeholder="输入学号/工号"></el-input>
       </el-form-item>
       <el-form-item label="用户名" prop="userName">
         <el-input v-model="dataForm.userName" placeholder="登录帐号"></el-input>
@@ -29,13 +26,20 @@
         <el-input v-model="dataForm.mobile" placeholder="手机号"></el-input>
       </el-form-item>
       <el-form-item label="角色" size="mini" prop="roleIdList">
-        <el-checkbox-group v-model="dataForm.roleIdList">
+        <el-checkbox-group v-model="dataForm.roleIdList" @change="checkRole()">
           <el-checkbox v-for="role in roleList" :key="role.roleId" :label="role.roleId">{{ role.roleName }}</el-checkbox>
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="班级" size="mini" prop="userClass">
+      <el-form-item label="所在学院" prop="faculty" v-show="facultyShow">
+        <el-select v-model="dataForm.faculty">
+          <el-option value="数学与计算机学院" >数学与计算机学院</el-option>
+          <el-option value="体育学院" >体育学院</el-option>
+          <el-option value="音乐学院" >音乐学院</el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="班级" size="mini" prop="userClass" v-show="userClassShow">
         <el-select v-model="dataForm.userClass">
-          <el-option v-for="classOne in classList" :key="classOne.name" :label="classOne.name">{{ classOne.name }}</el-option>
+          <el-option v-for="classOne in classList" :value="classOne.name" :key="classOne.name" :label="classOne.name">{{ classOne.name }}</el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="状态" size="mini" prop="status">
@@ -87,6 +91,8 @@
         }
       }
       return {
+        facultyShow: false,
+        userClassShow: false,
         visible: false,
         roleList: [],
         classList: [],
@@ -127,6 +133,15 @@
       }
     },
     methods: {
+      isTeacherOrStudent (key) {
+        let roleIdList = this.dataForm.roleIdList
+        if (!roleIdList) {
+          roleIdList = '[]'
+        } else if (roleIdList.length === 0) {
+          roleIdList = '[]'
+        }
+        return ((roleIdList || '[]') + '').indexOf(key) !== -1 || false
+      },
       init (id) {
         this.dataForm.id = id || 0
         this.$http({
@@ -165,11 +180,28 @@
                   this.dataForm.faculty = data.user.faculty
                   this.dataForm.name = data.user.name
                   this.dataForm.userClass = data.user.userClass
+                  this.checkRole()
                 }
               })
+            } else {
+              this.facultyShow = false
+              this.userClassShow = false
             }
           })
         })
+      },
+      checkRole () {
+        console.log('this.dataForm.roleIdList', this.dataForm.roleIdList)
+        if (this.isTeacherOrStudent(3)) {
+          this.facultyShow = true
+          this.userClassShow = true
+        } else if (this.isTeacherOrStudent(2)) {
+          this.facultyShow = true
+          this.userClassShow = false
+        } else {
+          this.facultyShow = false
+          this.userClassShow = false
+        }
       },
       // 表单提交
       dataFormSubmit () {

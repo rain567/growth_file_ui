@@ -23,12 +23,6 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="id"
-        header-align="center"
-        align="center"
-        label="id">
-      </el-table-column>
-      <el-table-column
         prop="studentName"
         header-align="center"
         align="center"
@@ -59,12 +53,6 @@
         label="分数">
       </el-table-column>
       <el-table-column
-        prop="className"
-        header-align="center"
-        align="center"
-        label="所属班级">
-      </el-table-column>
-      <el-table-column
         prop="examTime"
         header-align="center"
         align="center"
@@ -77,28 +65,10 @@
         label="考试类型">
       </el-table-column>
       <el-table-column
-        prop="createTime"
-        header-align="center"
-        align="center"
-        label="创建时间">
-      </el-table-column>
-      <el-table-column
         prop="updateTime"
         header-align="center"
         align="center"
         label="更新时间">
-      </el-table-column>
-      <el-table-column
-        prop="operator"
-        header-align="center"
-        align="center"
-        label="操作人">
-      </el-table-column>
-      <el-table-column
-        prop="remark"
-        header-align="center"
-        align="center"
-        label="备注">
       </el-table-column>
       <el-table-column
         fixed="right"

@@ -10,38 +10,28 @@
     <el-form-item label="学生姓名" prop="name">
       <el-input v-model="dataForm.name" placeholder="学生姓名"></el-input>
     </el-form-item>
-    <el-form-item label="状态(1新建、2审核)" prop="status">
-      <el-input v-model="dataForm.status" placeholder="状态(1新建、2审核)"></el-input>
-    </el-form-item>
-    <el-form-item label="类型(1奖励、2惩罚)" prop="type">
-      <el-input v-model="dataForm.type" placeholder="类型(1奖励、2惩罚)"></el-input>
+    <el-form-item label="类型" prop="type">
+      <el-select v-model="dataForm.type">
+        <el-option value="奖励">奖励</el-option>
+        <el-option value="惩罚">惩罚</el-option>
+      </el-select>
     </el-form-item>
     <el-form-item label="录入人姓名" prop="createName">
       <el-input v-model="dataForm.createName" placeholder="录入人姓名"></el-input>
     </el-form-item>
-    <el-form-item label="审批人姓名" prop="auditName">
-      <el-input v-model="dataForm.auditName" placeholder="审批人姓名"></el-input>
-    </el-form-item>
     <el-form-item label="获奖/惩日期" prop="getTime">
-      <el-input v-model="dataForm.getTime" placeholder="获奖/惩日期"></el-input>
+      <el-date-picker
+        v-model="dataForm.getTime"
+        type="date"
+        value-format="yyyy-MM-dd HH:mm:ss"
+        placeholder="选择日期">
+      </el-date-picker>
     </el-form-item>
     <el-form-item label="获奖/惩内容" prop="content">
       <el-input v-model="dataForm.content" placeholder="获奖/惩内容"></el-input>
     </el-form-item>
     <el-form-item label="材料相关证明" prop="cl">
       <el-input v-model="dataForm.cl" placeholder="材料相关证明"></el-input>
-    </el-form-item>
-    <el-form-item label="创建时间" prop="createTime">
-      <el-input v-model="dataForm.createTime" placeholder="创建时间"></el-input>
-    </el-form-item>
-    <el-form-item label="更新时间" prop="updateTime">
-      <el-input v-model="dataForm.updateTime" placeholder="更新时间"></el-input>
-    </el-form-item>
-    <el-form-item label="操作人" prop="operator">
-      <el-input v-model="dataForm.operator" placeholder="操作人"></el-input>
-    </el-form-item>
-    <el-form-item label="备注" prop="remark">
-      <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">

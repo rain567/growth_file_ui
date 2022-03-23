@@ -44,13 +44,17 @@
         prop="status"
         header-align="center"
         align="center"
-        label="状态(1新建、2审核)">
+        label="状态">
+         <template slot-scope="scope">
+          <el-tag v-show="scope.row.status == 1">新增</el-tag>
+          <el-tag type="success" v-show="scope.row.status == 2">审核</el-tag>
+        </template>
       </el-table-column>
       <el-table-column
         prop="type"
         header-align="center"
         align="center"
-        label="类型(1奖励、2惩罚)">
+        label="类型">
       </el-table-column>
       <el-table-column
         prop="createName"
@@ -83,28 +87,10 @@
         label="材料相关证明">
       </el-table-column>
       <el-table-column
-        prop="createTime"
-        header-align="center"
-        align="center"
-        label="创建时间">
-      </el-table-column>
-      <el-table-column
         prop="updateTime"
         header-align="center"
         align="center"
         label="更新时间">
-      </el-table-column>
-      <el-table-column
-        prop="operator"
-        header-align="center"
-        align="center"
-        label="操作人">
-      </el-table-column>
-      <el-table-column
-        prop="remark"
-        header-align="center"
-        align="center"
-        label="备注">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -115,6 +101,8 @@
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button type="text" size="small" v-show="scope.row.status == 1" @click="updateStatus(scope.row, 2)">审核</el-button>
+          <el-button type="text" size="small" v-show="scope.row.status == 2" @click="updateStatus(scope.row, 1)">取消审核</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -156,6 +144,29 @@
       this.getDataList()
     },
     methods: {
+      updateStatus (updateData, status) {
+        this.$http({
+          url: this.$http.adornUrl(`/generator/gfjc/update`),
+          method: 'post',
+          data: this.$http.adornData({
+            'id': updateData.id,
+            'status': status,
+            'auditName': this.$store.state.user.name
+          })
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500
+            })
+            updateData.status = status
+            updateData.auditName = this.$store.state.user.name
+          } else {
+            this.$message.error(data.msg)
+          }
+        })
+      },
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true

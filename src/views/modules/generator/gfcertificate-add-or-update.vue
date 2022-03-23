@@ -7,8 +7,8 @@
     <el-form-item label="获得者姓名" prop="userName">
       <el-input v-model="dataForm.userName" placeholder="获得者姓名"></el-input>
     </el-form-item>
-    <el-form-item label="获得者id" prop="userId">
-      <el-input v-model="dataForm.userId" placeholder="获得者id"></el-input>
+    <el-form-item label="获得者学号" prop="userId">
+      <el-input v-model="dataForm.userId" placeholder="获得者学号"></el-input>
     </el-form-item>
     <el-form-item label="证书名称" prop="name">
       <el-input v-model="dataForm.name" placeholder="证书名称"></el-input>

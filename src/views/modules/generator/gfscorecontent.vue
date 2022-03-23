@@ -6,8 +6,8 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('generator:gfowner:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-button v-if="isAuth('generator:gfowner:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button v-if="isAuth('generator:gfscorecontent:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('generator:gfscorecontent:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <el-table
@@ -23,122 +23,40 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="name"
+        prop="studentName"
         header-align="center"
         align="center"
-        label="档案名称">
+        label="姓名">
       </el-table-column>
       <el-table-column
-        prop="ownerNo"
+        prop="studentNo"
         header-align="center"
         align="center"
-        label="档案主人学号">
+        label="学号">
       </el-table-column>
       <el-table-column
-        prop="ownerName"
+        prop="course"
         header-align="center"
         align="center"
-        label="档案主人姓名">
+        label="科目">
       </el-table-column>
       <el-table-column
-        prop="homePhone"
+        prop="teacher"
         header-align="center"
         align="center"
-        label="家庭联系方式">
+        label="任课老师">
       </el-table-column>
       <el-table-column
-        prop="bysj"
+        prop="content"
         header-align="center"
         align="center"
-        label="毕业时间">
-      </el-table-column>
-      <el-table-column
-        prop="rxsj"
-        header-align="center"
-        align="center"
-        label="入学时间">
-      </el-table-column>
-      <el-table-column
-        prop="jtzz"
-        header-align="center"
-        align="center"
-        label="家庭住址">
-      </el-table-column>
-      <el-table-column
-        prop="status"
-        header-align="center"
-        align="center"
-        label="状态">
-        <template slot-scope="scope">
-          <el-tag v-show="scope.row.status == 1">新增</el-tag>
-          <el-tag type="success" v-show="scope.row.status == 2">审核</el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="birthday"
-        header-align="center"
-        align="center"
-        label="出生日期">
-      </el-table-column>
-      <el-table-column
-        prop="zzmm"
-        header-align="center"
-        align="center"
-        label="政治面貌">
-      </el-table-column>
-      <el-table-column
-        prop="major"
-        header-align="center"
-        align="center"
-        label="所属专业">
-      </el-table-column>
-      <el-table-column
-        prop="userClass"
-        header-align="center"
-        align="center"
-        label="所属班级">
-      </el-table-column>
-      <el-table-column
-        prop="mz"
-        header-align="center"
-        align="center"
-        label="民族">
-      </el-table-column>
-      <el-table-column
-        prop="jg"
-        header-align="center"
-        align="center"
-        label="籍贯">
-      </el-table-column>
-      <el-table-column
-        prop="shareUser"
-        header-align="center"
-        align="center"
-        label="档案共享用户">
-      </el-table-column>
-      <el-table-column
-        prop="isShare"
-        header-align="center"
-        align="center"
-        label="是否共享档案">
-      </el-table-column>
-      <el-table-column
-        prop="createTime"
-        header-align="center"
-        align="center"
-        label="创建时间">
+        label="内容">
       </el-table-column>
       <el-table-column
         prop="updateTime"
         header-align="center"
         align="center"
         label="更新时间">
-      </el-table-column>
-      <el-table-column
-        prop="remark"
-        header-align="center"
-        align="center"
-        label="备注">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -149,8 +67,6 @@
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
-          <el-button type="text" size="small" v-show="scope.row.status == 1" @click="updateStatus(scope.row, 2)">审核</el-button>
-          <el-button type="text" size="small" v-show="scope.row.status == 2" @click="updateStatus(scope.row, 1)">取消审核</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -169,7 +85,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './gfowner-add-or-update'
+  import AddOrUpdate from './gfscorecontent-add-or-update'
   export default {
     data () {
       return {
@@ -192,31 +108,11 @@
       this.getDataList()
     },
     methods: {
-      updateStatus (updateData, status) {
-        this.$http({
-          url: this.$http.adornUrl(`/generator/gfowner/update`),
-          method: 'post',
-          data: this.$http.adornData({
-            'id': updateData.id,
-            'status': status
-          })
-        }).then(({data}) => {
-          if (data && data.code === 0) {
-            this.$message({
-              message: '操作成功',
-              type: 'success',
-              duration: 1500
-            })
-            updateData.status = status
-          } else {
-            this.$message.error(data.msg)
-          }
-        })
-      },
+      // 获取数据列表
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/generator/gfowner/list'),
+          url: this.$http.adornUrl('/generator/gfscorecontent/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
@@ -267,7 +163,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/generator/gfowner/delete'),
+            url: this.$http.adornUrl('/generator/gfscorecontent/delete'),
             method: 'post',
             data: this.$http.adornData(ids, false)
           }).then(({data}) => {

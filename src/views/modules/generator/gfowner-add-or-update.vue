@@ -104,7 +104,8 @@
           createTime: '',
           updateTime: '',
           operator: '',
-          remark: ''
+          remark: '',
+          instructorId: 0
         },
         dataRule: {
           name: [
@@ -210,6 +211,7 @@
                   this.dataForm.updateTime = data.gfOwner.updateTime
                   this.dataForm.operator = data.gfOwner.operator
                   this.dataForm.remark = data.gfOwner.remark
+                  this.dataForm.instructorId = data.gfOwner.instructorId
                 }
               })
             }
@@ -220,6 +222,12 @@
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
+            this.classList.forEach(element => {
+              if (element.name === this.dataForm.userClass) {
+                this.dataForm.instructorId = element.instructorId
+                console.log(element)
+              }
+            })
             this.$http({
               url: this.$http.adornUrl(`/generator/gfowner/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
@@ -244,7 +252,8 @@
                 'createTime': this.dataForm.createTime,
                 'updateTime': this.dataForm.updateTime,
                 'operator': this.dataForm.operator,
-                'remark': this.dataForm.remark
+                'remark': this.dataForm.remark,
+                'instructorId': this.dataForm.instructorId
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

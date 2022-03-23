@@ -4,14 +4,11 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="体测姓名" prop="userName">
+    <el-form-item label="姓名" prop="userName">
       <el-input v-model="dataForm.userName" placeholder="体测姓名"></el-input>
     </el-form-item>
     <el-form-item label="学号" prop="userNo">
       <el-input v-model="dataForm.userNo" placeholder="学号"></el-input>
-    </el-form-item>
-    <el-form-item label="体测学生" prop="userId">
-      <el-input v-model="dataForm.userId" placeholder="体测学生"></el-input>
     </el-form-item>
     <el-form-item label="长跑" prop="longRun">
       <el-input v-model="dataForm.longRun" placeholder="长跑"></el-input>
@@ -62,7 +59,11 @@
       <el-input v-model="dataForm.sex" placeholder="性别"></el-input>
     </el-form-item>
     <el-form-item label="所在学院" prop="faculty">
-      <el-input v-model="dataForm.faculty" placeholder="所在学院"></el-input>
+      <el-select v-model="dataForm.faculty">
+        <el-option value="数学与计算机学院" >数学与计算机学院</el-option>
+        <el-option value="体育学院" >体育学院</el-option>
+        <el-option value="音乐学院" >音乐学院</el-option>
+      </el-select>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">

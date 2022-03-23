@@ -1,24 +1,23 @@
 <template>
-  <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
-    :close-on-click-modal="false"
-    :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="被评论者id" prop="originUserId">
-      <el-input v-model="dataForm.originUserId" placeholder="被评论者id"></el-input>
-    </el-form-item>
-    <el-form-item label="被评论者姓名" prop="originUserName">
-      <el-input v-model="dataForm.originUserName" placeholder="被评论者姓名"></el-input>
-    </el-form-item>
-    <el-form-item label="评论内容" prop="content">
-      <el-input type="textarea" rows="4" v-model="dataForm.content" placeholder="评论内容"></el-input>
-    </el-form-item>
-    </el-form>
-    <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
-    </span>
-  </el-dialog>
+  <div>
+    <div v-show="!ifShow" style="float: right;">
+      <el-button v-if="isAuth('generator:gfcomment:save')" type="primary" @click="ifShow = true">修改自我描述</el-button>
+    </div>
+    <div v-show="!ifShow">
+      {{ dataForm.content || '请填写自我描述' }}
+    </div>
+    <div v-show="ifShow">
+      <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()">
+      <el-form-item label="评论内容" prop="content">
+        <el-input type="textarea" rows="5" v-model="dataForm.content" placeholder="评论内容" ></el-input>
+      </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="ifShow = false">取消</el-button>
+        <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
+      </span>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -26,13 +25,13 @@
     data () {
       return {
         visible: false,
+        ifShow: false,
         dataForm: {
           id: 0,
           userId: this.$store.state.user.id,
-          originUserId: '',
-          originUserName: '',
+          originUserId: this.$store.state.user.id,
           content: '',
-          type: 2,
+          type: 1,
           operator: '',
           remark: ''
         },
@@ -42,9 +41,6 @@
           ],
           originUserId: [
             { required: true, message: '被评论者id不能为空', trigger: 'blur' }
-          ],
-          originUserName: [
-            { required: true, message: '被评论者姓名不能为空', trigger: 'blur' }
           ],
           content: [
             { required: true, message: '评论内容不能为空', trigger: 'blur' }
@@ -61,7 +57,35 @@
         }
       }
     },
+    activated () {
+      this.getDataList()
+    },
     methods: {
+      getDataList () {
+        this.dataListLoading = true
+        this.$http({
+          url: this.$http.adornUrl('/generator/gfcomment/list'),
+          method: 'get',
+          params: this.$http.adornParams({
+            'page': 1,
+            'limit': 1,
+            'userId': this.$store.state.user.id,
+            'type': 1
+          })
+        }).then(({data}) => {
+          if (data && data.code === 0) {
+            let dataOne = data.page.list[0]
+            if (dataOne) {
+              this.dataForm.id = dataOne.id
+              this.dataForm.userId = dataOne.userId
+              this.dataForm.content = dataOne.content
+              this.dataForm.type = dataOne.type
+            }
+          } else {
+          }
+          this.dataListLoading = false
+        })
+      },
       init (id) {
         this.dataForm.id = id || 0
         this.visible = true
@@ -80,7 +104,6 @@
                 this.dataForm.type = data.gfComment.type
                 this.dataForm.operator = data.gfComment.operator
                 this.dataForm.remark = data.gfComment.remark
-                this.dataForm.originUserName = data.gfComment.originUserName
               }
             })
           }
@@ -97,7 +120,6 @@
                 'id': this.dataForm.id || undefined,
                 'userId': this.dataForm.userId,
                 'originUserId': this.dataForm.originUserId,
-                'originUserName': this.dataForm.originUserName,
                 'content': this.dataForm.content,
                 'type': this.dataForm.type,
                 'operator': this.dataForm.operator,
@@ -110,7 +132,7 @@
                   type: 'success',
                   duration: 1500,
                   onClose: () => {
-                    this.visible = false
+                    this.ifShow = false
                     this.$emit('refreshDataList')
                   }
                 })

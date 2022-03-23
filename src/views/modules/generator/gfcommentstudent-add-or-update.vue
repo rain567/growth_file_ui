@@ -4,12 +4,6 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-    <el-form-item label="被评论者id" prop="originUserId">
-      <el-input v-model="dataForm.originUserId" placeholder="被评论者id"></el-input>
-    </el-form-item>
-    <el-form-item label="被评论者姓名" prop="originUserName">
-      <el-input v-model="dataForm.originUserName" placeholder="被评论者姓名"></el-input>
-    </el-form-item>
     <el-form-item label="评论内容" prop="content">
       <el-input type="textarea" rows="4" v-model="dataForm.content" placeholder="评论内容"></el-input>
     </el-form-item>
@@ -29,6 +23,7 @@
         dataForm: {
           id: 0,
           userId: this.$store.state.user.id,
+          username: this.$store.state.user.username,
           originUserId: '',
           originUserName: '',
           content: '',
@@ -62,28 +57,37 @@
       }
     },
     methods: {
-      init (id) {
-        this.dataForm.id = id || 0
+      init (originUserId, name) {
+        this.dataForm.originUserId = originUserId || 0
+        this.dataForm.originUserName = name
+        this.dataForm.userId = this.$store.state.user.id
         this.visible = true
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields()
-          if (this.dataForm.id) {
-            this.$http({
-              url: this.$http.adornUrl(`/generator/gfcomment/info/${this.dataForm.id}`),
-              method: 'get',
-              params: this.$http.adornParams()
-            }).then(({data}) => {
-              if (data && data.code === 0) {
-                this.dataForm.userId = data.gfComment.userId
-                this.dataForm.originUserId = data.gfComment.originUserId
-                this.dataForm.content = data.gfComment.content
-                this.dataForm.type = data.gfComment.type
-                this.dataForm.operator = data.gfComment.operator
-                this.dataForm.remark = data.gfComment.remark
-                this.dataForm.originUserName = data.gfComment.originUserName
-              }
+          this.$http({
+            url: this.$http.adornUrl(`/generator/gfcomment/list`),
+            method: 'get',
+            params: this.$http.adornParams({
+              'page': 1,
+              'limit': 1,
+              'type': 2,
+              'originUserId': this.dataForm.originUserId,
+              'userId': this.$store.state.user.id
             })
-          }
+          }).then(({data}) => {
+            if (data && data.code === 0) {
+              data = data.page.list[0]
+              this.dataForm.id = data.id
+              this.dataForm.userId = data.userId
+              this.dataForm.originUserId = data.originUserId
+              this.dataForm.content = data.content
+              this.dataForm.type = data.type
+              this.dataForm.operator = data.operator
+              this.dataForm.remark = data.remark
+              this.dataForm.originUserName = data.originUserName
+              this.dataForm.username = data.username
+            }
+          })
         })
       },
       // 表单提交

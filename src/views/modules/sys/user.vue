@@ -36,6 +36,12 @@
         label="用户名">
       </el-table-column>
       <el-table-column
+        prop="faculty"
+        header-align="center"
+        align="center"
+        label="学院">
+      </el-table-column>
+      <el-table-column
         prop="email"
         header-align="center"
         align="center"
