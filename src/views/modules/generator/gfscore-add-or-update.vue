@@ -29,8 +29,8 @@
     </el-form-item>
     <el-form-item label="考试类型" prop="type">
       <el-select v-model="dataForm.type">
-        <el-option value="线上">线上</el-option>
-        <el-option value="线下">线下</el-option>
+        <el-option value="必修">必修</el-option>
+        <el-option value="选修">选修</el-option>
       </el-select>
     </el-form-item>
     </el-form>
