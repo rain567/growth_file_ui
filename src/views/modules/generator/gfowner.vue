@@ -70,8 +70,9 @@
         align="center"
         label="状态">
         <template slot-scope="scope">
-          <el-tag v-show="scope.row.status == 1">新增</el-tag>
-          <el-tag type="success" v-show="scope.row.status == 2">审核</el-tag>
+          <el-tag v-show="scope.row.status == 1">未审核</el-tag>
+          <el-tag type="success" v-show="scope.row.status == 2">通过审核</el-tag>
+          <el-tag type="danger" v-show="scope.row.status == 3">未通过审核</el-tag>
         </template>
       </el-table-column>
       <el-table-column
@@ -149,8 +150,9 @@
         <template slot-scope="scope">
           <el-button type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
           <el-button type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
-          <el-button type="text" size="small" v-show="scope.row.status == 1" @click="updateStatus(scope.row, 2)">审核</el-button>
-          <el-button type="text" size="small" v-show="scope.row.status == 2" @click="updateStatus(scope.row, 1)">取消审核</el-button>
+          <el-button type="text" size="small" v-show="scope.row.status == 1" @click="updateStatus(scope.row, 2)">审核通过</el-button>
+          <el-button type="text" size="small" v-show="scope.row.status == 1" @click="updateStatus(scope.row, 3)">审核不通过</el-button>
+          <el-button type="text" size="small" v-show="scope.row.status == 2 | scope.row.status == 3" @click="updateStatus(scope.row, 1)">取消审核</el-button>
         </template>
       </el-table-column>
     </el-table>

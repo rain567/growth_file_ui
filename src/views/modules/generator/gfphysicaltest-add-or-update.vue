@@ -3,24 +3,40 @@
     :title="!dataForm.id ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="130px">
     <el-form-item label="姓名" prop="userName">
       <el-input v-model="dataForm.userName" placeholder="体测姓名"></el-input>
     </el-form-item>
     <el-form-item label="学号" prop="userNo">
       <el-input v-model="dataForm.userNo" placeholder="学号"></el-input>
     </el-form-item>
+    <el-form-item label="年级" prop="grade">
+      <el-input v-model="dataForm.grade" placeholder="年级"></el-input>
+    </el-form-item>
+    <el-form-item label="性别" prop="sex">
+      <el-select v-model="dataForm.sex">
+        <el-option value="男" >男</el-option>
+        <el-option value="女" >女</el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="所在学院" prop="faculty">
+      <el-select v-model="dataForm.faculty">
+        <el-option value="数学与计算机学院" >数学与计算机学院</el-option>
+        <el-option value="体育学院" >体育学院</el-option>
+        <el-option value="音乐学院" >音乐学院</el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="引体向上" prop="chinUp" v-show="dataForm.sex === '男'">
+      <el-input v-model="dataForm.chinUp" placeholder="引体向上"></el-input>
+    </el-form-item>
+    <el-form-item label="坐立体前屈" prop="seatBodyAnteflexion" v-show="dataForm.sex === '女'">
+      <el-input v-model="dataForm.seatBodyAnteflexion" placeholder="坐立体前屈"></el-input>
+    </el-form-item>
     <el-form-item label="长跑" prop="longRun">
       <el-input v-model="dataForm.longRun" placeholder="长跑"></el-input>
     </el-form-item>
-    <el-form-item label="引体向上" prop="chinUp">
-      <el-input v-model="dataForm.chinUp" placeholder="引体向上"></el-input>
-    </el-form-item>
     <el-form-item label="立定跳远" prop="standingLongJump">
       <el-input v-model="dataForm.standingLongJump" placeholder="立定跳远"></el-input>
-    </el-form-item>
-    <el-form-item label="左立体前屈" prop="seatBodyAnteflexion">
-      <el-input v-model="dataForm.seatBodyAnteflexion" placeholder="左立体前屈"></el-input>
     </el-form-item>
     <el-form-item label="短跑" prop="sprint">
       <el-input v-model="dataForm.sprint" placeholder="短跑"></el-input>
@@ -40,8 +56,8 @@
     <el-form-item label="立定跳远得分" prop="standingLongJumpScore">
       <el-input v-model="dataForm.standingLongJumpScore" placeholder="立定跳远得分"></el-input>
     </el-form-item>
-    <el-form-item label="左立体前屈得分" prop="seatBodyAnteflexionScore">
-      <el-input v-model="dataForm.seatBodyAnteflexionScore" placeholder="左立体前屈得分"></el-input>
+    <el-form-item label="坐立体前屈得分" prop="seatBodyAnteflexionScore">
+      <el-input v-model="dataForm.seatBodyAnteflexionScore" placeholder="坐立体前屈得分"></el-input>
     </el-form-item>
     <el-form-item label="短跑得分" prop="sprintScore">
       <el-input v-model="dataForm.sprintScore" placeholder="短跑得分"></el-input>
@@ -55,15 +71,8 @@
     <el-form-item label="身高" prop="stature">
       <el-input v-model="dataForm.stature" placeholder="身高"></el-input>
     </el-form-item>
-    <el-form-item label="性别" prop="sex">
-      <el-input v-model="dataForm.sex" placeholder="性别"></el-input>
-    </el-form-item>
-    <el-form-item label="所在学院" prop="faculty">
-      <el-select v-model="dataForm.faculty">
-        <el-option value="数学与计算机学院" >数学与计算机学院</el-option>
-        <el-option value="体育学院" >体育学院</el-option>
-        <el-option value="音乐学院" >音乐学院</el-option>
-      </el-select>
+    <el-form-item label="学年总分" prop="yearScore">
+      <el-input v-model="dataForm.yearScore" placeholder="学年总分"></el-input>
     </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -97,6 +106,8 @@
           sprintScore: '',
           pulmonaryScore: '',
           statureWeightScore: '',
+          yearScore: '',
+          grade: '',
           stature: '',
           sex: '',
           faculty: '',
@@ -123,7 +134,7 @@
             { required: true, message: '立定跳远不能为空', trigger: 'blur' }
           ],
           seatBodyAnteflexion: [
-            { required: true, message: '左立体前屈不能为空', trigger: 'blur' }
+            { required: true, message: '坐立体前屈不能为空', trigger: 'blur' }
           ],
           sprint: [
             { required: true, message: '短跑不能为空', trigger: 'blur' }
@@ -144,7 +155,7 @@
             { required: true, message: '立定跳远得分不能为空', trigger: 'blur' }
           ],
           seatBodyAnteflexionScore: [
-            { required: true, message: '左立体前屈得分不能为空', trigger: 'blur' }
+            { required: true, message: '坐立体前屈得分不能为空', trigger: 'blur' }
           ],
           sprintScore: [
             { required: true, message: '短跑得分不能为空', trigger: 'blur' }
@@ -169,6 +180,12 @@
           ],
           remark: [
             { required: true, message: '备注不能为空', trigger: 'blur' }
+          ],
+          yearScore: [
+            { required: true, message: '学年总分不能为空', trigger: 'blur' }
+          ],
+          grade: [
+            { required: true, message: '年级不能为空', trigger: 'blur' }
           ]
         }
       }
@@ -208,6 +225,8 @@
                 this.dataForm.faculty = data.gfPhysicalTest.faculty
                 this.dataForm.operator = data.gfPhysicalTest.operator
                 this.dataForm.remark = data.gfPhysicalTest.remark
+                this.dataForm.yearScore = data.gfPhysicalTest.yearScore
+                this.dataForm.grade = data.gfPhysicalTest.grade
               }
             })
           }
@@ -243,7 +262,9 @@
                 'sex': this.dataForm.sex,
                 'faculty': this.dataForm.faculty,
                 'operator': this.dataForm.operator,
-                'remark': this.dataForm.remark
+                'yearScore': this.dataForm.yearScore,
+                'remark': this.dataForm.remark,
+                'grade': this.dataForm.grade
               })
             }).then(({data}) => {
               if (data && data.code === 0) {

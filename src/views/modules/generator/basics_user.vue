@@ -11,7 +11,11 @@
         <el-input v-model="dataForm.name" placeholder="姓名"></el-input>
       </el-form-item>
       <el-form-item label="所在学院" prop="faculty">
-        <el-input v-model="dataForm.faculty" placeholder="所在学院"></el-input>
+        <el-select v-model="dataForm.faculty">
+        <el-option value="数学与计算机学院" >数学与计算机学院</el-option>
+        <el-option value="体育学院" >体育学院</el-option>
+        <el-option value="音乐学院" >音乐学院</el-option>
+      </el-select>
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="dataForm.email" placeholder="邮箱"></el-input>
@@ -65,7 +69,7 @@
         roleList: [],
         dataForm: {
           id: 0,
-          no: 0,
+          no: '',
           faculty: '',
           userName: '',
           password: '',
@@ -103,39 +107,31 @@
     },
     methods: {
       init (id) {
+        console.log('this.$store.state.user.id', id)
         this.dataForm.id = id || 0
-        this.$http({
-          url: this.$http.adornUrl('/sys/role/select'),
-          method: 'get',
-          params: this.$http.adornParams()
-        }).then(({data}) => {
-          this.roleList = data && data.code === 0 ? data.list : []
-        }).then(() => {
-          this.visible = true
-          this.$nextTick(() => {
-            this.$refs['dataForm'].resetFields()
+        if (this.dataForm.id) {
+          this.$http({
+            url: this.$http.adornUrl(`/sys/user/info/${this.dataForm.id}`),
+            method: 'get',
+            params: this.$http.adornParams()
+          }).then(({data}) => {
+            console.log('  ')
+            console.log('data', data)
+            console.log('data', data.code)
+            if (data && data.code === 0) {
+              console.log('11')
+              this.dataForm.userName = data.user.username
+              this.dataForm.no = data.user.no
+              this.dataForm.faculty = data.user.faculty
+              this.dataForm.salt = data.user.salt
+              this.dataForm.email = data.user.email
+              this.dataForm.mobile = data.user.mobile
+              this.dataForm.roleIdList = data.user.roleIdList
+              this.dataForm.status = data.user.status
+              this.dataForm.name = data.user.name
+            }
           })
-        }).then(() => {
-          if (this.dataForm.id) {
-            this.$http({
-              url: this.$http.adornUrl(`/sys/user/info/${this.dataForm.id}`),
-              method: 'get',
-              params: this.$http.adornParams()
-            }).then(({data}) => {
-              if (data && data.code === 0) {
-                this.dataForm.userName = data.user.username
-                this.dataForm.no = data.user.no
-                this.dataForm.faculty = data.user.faculty
-                this.dataForm.salt = data.user.salt
-                this.dataForm.email = data.user.email
-                this.dataForm.mobile = data.user.mobile
-                this.dataForm.roleIdList = data.user.roleIdList
-                this.dataForm.status = data.user.status
-                this.dataForm.name = data.user.name
-              }
-            })
-          }
-        })
+        }
       },
       // 表单提交
       dataFormSubmit () {
